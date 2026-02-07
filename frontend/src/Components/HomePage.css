@@ -1,0 +1,155 @@
+.home-container {
+    height: calc(100vh - 60px);
+    background: #f5f0eb;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.home-cover {
+    height: 45%;
+    min-height: 200px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cover-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-title {
+    font-size: 42px;
+    font-weight: 500;
+    color: white;
+    text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3);
+    letter-spacing: 1px;
+    padding: 12px 40px;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 100px;
+}
+
+.home-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 40px;
+    gap: 15px;
+    overflow: hidden;
+}
+
+.welcome-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+    text-align: center;
+    max-width: 850px;
+    margin: 0;
+}
+
+.welcome-text strong {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.contact-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px 35px 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    border-left: 4px solid #8b5cf6;
+}
+
+.contact-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #8b3a3a;
+    margin: 0 0 15px 0;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.contact-label {
+    font-weight: 600;
+    color: #333;
+}
+
+.contact-value {
+    color: #555;
+}
+
+@media (max-height: 700px) {
+    .home-cover {
+        height: 40%;
+        min-height: 150px;
+    }
+
+    .cover-title {
+        font-size: 32px;
+        padding: 10px 30px;
+    }
+
+    .home-content {
+        padding: 10px 20px;
+        gap: 10px;
+    }
+
+    .welcome-text {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .contact-section {
+        padding: 12px 25px 15px;
+    }
+
+    .contact-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .contact-item {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-content {
+        padding: 15px;
+    }
+
+    .cover-title {
+        font-size: 28px;
+        padding: 8px 25px;
+    }
+
+    .contact-section {
+        width: 100%;
+        max-width: 320px;
+    }
+}
