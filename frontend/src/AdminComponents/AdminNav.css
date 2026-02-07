@@ -41,14 +41,18 @@
     gap: 30px;
 }
 
-/* User Info - Plain text style matching first image */
+/* User Info - Capsule Style matching user nav */
 .user-info {
-    color: rgba(255, 255, 255, 0.85);
-    font-weight: 500;
+    color: #e2e8f0;
+    font-weight: 600;
     font-size: 14px;
     font-family: 'Outfit', sans-serif;
     white-space: nowrap;
     letter-spacing: 0.3px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Nav Links Container */
@@ -94,32 +98,30 @@
 }
 
 /* Logout Button - Transparent Text-Only Style (Erased Oval) */
+/* Logout Button - White Pill Style */
 .logout-btn {
-    background: transparent;
-    color: #ffffff;
-    /* Pure White Text */
+    background: #ffffff;
+    color: #1e3a4c;
+    /* Dark text to contrast white bg */
     border: none;
-    /* No border = Erased Oval */
-    padding: 9px 20px;
+    padding: 8px 24px;
     border-radius: 50px;
-    font-weight: 600;
-    /* Slightly bolder for visibility */
+    /* Pill shape */
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
-    font-size: 15px;
-    /* Slightly larger for visibility */
-    box-shadow: none;
+    font-size: 14px;
     font-family: 'Outfit', sans-serif;
     white-space: nowrap;
-    letter-spacing: 0.5px;
-    margin-left: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-left: 20px;
 }
 
 .logout-btn:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.05);
-    /* Subtle hover to indicate clickability */
+    background: #f1f5f9;
     transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    color: #1e3a4c;
 }
 
 .logout-btn:active {

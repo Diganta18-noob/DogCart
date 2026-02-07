@@ -6,6 +6,7 @@ import api, { endpoints } from '../apiConfig';
 import loginBg from '../assets/images/loginphoto.jpg';
 import logo from '../assets/images/logo.jpg';
 import './Signup.css';
+import { toast } from 'react-toastify';
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -30,17 +31,26 @@ const Signup = () => {
 
         try {
             await api.post(endpoints.signup, payload);
-            setShowSuccessModal(true);
+            toast.success('Registration Successful! Please login.');
+            navigate('/login');
             reset();
         } catch (error) {
             console.error('Signup error:', error);
-            setSignupError(error.response?.data?.message || 'Registration failed. Please try again.');
-        }
-    };
+            const errorMessage = error.response?.data?.message || 'Registration failed.';
 
-    const handleSuccessClose = () => {
-        setShowSuccessModal(false);
-        navigate('/login');
+            // Check for duplicate key error (MongoDB E11000)
+            if (errorMessage.includes('E11000') || errorMessage.includes('duplicate')) {
+                if (errorMessage.includes('email')) {
+                    setSignupError('Email already exists');
+                } else if (errorMessage.includes('username')) {
+                    setSignupError('Username already exists');
+                } else {
+                    setSignupError('User already exists with these details');
+                }
+            } else {
+                setSignupError(errorMessage);
+            }
+        }
     };
 
     return (
@@ -168,16 +178,7 @@ const Signup = () => {
                 </div>
             </div>
 
-            {showSuccessModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content success-modal">
-                        <div className="success-icon">✓</div>
-                        <h3>Registration Successful!</h3>
-                        <p>Your account has been created successfully.</p>
-                        <button onClick={handleSuccessClose} className="ok-btn">Go to Login</button>
-                    </div>
-                </div>
-            )}
+            {/* Success Modal Removed - Using Toast */}
         </div>
     );
 };

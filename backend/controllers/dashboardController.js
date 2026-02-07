@@ -6,7 +6,8 @@ const Review = require('../models/review');
 // Get dashboard statistics
 const getDashboardStats = async (req, res) => {
     try {
-        const totalUsers = await User.countDocuments({ userRole: 'User' });
+        console.log('Fetching dashboard stats from MongoDB...');
+        const totalUsers = await User.countDocuments({ userRole: { $regex: /^user$/i } });
         const totalPets = await Dog.countDocuments();
         const totalOrders = await Order.countDocuments();
         const totalReviews = await Review.countDocuments();
@@ -25,7 +26,7 @@ const getDashboardStats = async (req, res) => {
 // Get all users (non-admin)
 const getAllUsers = async (req, res) => {
     try {
-        const users = await User.find({ userRole: 'User' }).select('-password');
+        const users = await User.find({ userRole: { $regex: /^user$/i } }).select('-password');
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });

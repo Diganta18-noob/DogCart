@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import api, { endpoints } from '../apiConfig';
 import forgotPasswordImage from '../assets/images/forgotpassword.png';
 import './ForgotPassword.css';
+import { toast } from 'react-toastify';
 
 const ForgotPasswordSchema = Yup.object().shape({
     email: Yup.string().email('Please enter a valid email').required('Email is required'),
@@ -44,11 +45,12 @@ const ForgotPassword = () => {
     };
 
     const handleSubmit = (values, { setSubmitting }) => {
+        // Simulate API call delay
         setTimeout(() => {
-            alert('Password reset successful! Please login with your new password.');
+            toast.success('Password reset successful! Please login with your new password.');
             navigate('/login');
             setSubmitting(false);
-        }, 500);
+        }, 1000);
     };
 
     return (

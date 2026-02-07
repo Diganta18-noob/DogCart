@@ -27,6 +27,8 @@ import Checkout from './UserComponents/Checkout';
 import Cart from './UserComponents/Cart';
 
 import './App.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -57,6 +59,8 @@ const UserLayout = ({ children }) => (
         <Cart />
     </>
 );
+
+
 
 function App() {
     const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -102,6 +106,7 @@ function App() {
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="colored" />
         </div>
     );
 }
