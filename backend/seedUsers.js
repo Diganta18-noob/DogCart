@@ -16,6 +16,34 @@ const demoUsers = [
         mobileNumber: '0987654321',
         password: 'demoadmin123',
         userRole: 'Admin'
+    },
+    {
+        username: 'john_doe',
+        email: 'john@gmail.com',
+        mobileNumber: '9876543210',
+        password: 'john123',
+        userRole: 'User'
+    },
+    {
+        username: 'jane_smith',
+        email: 'jane@gmail.com',
+        mobileNumber: '8765432109',
+        password: 'jane123',
+        userRole: 'User'
+    },
+    {
+        username: 'mike_wilson',
+        email: 'mike@gmail.com',
+        mobileNumber: '7654321098',
+        password: 'mike123',
+        userRole: 'User'
+    },
+    {
+        username: 'sarah_jones',
+        email: 'sarah@gmail.com',
+        mobileNumber: '6543210987',
+        password: 'sarah123',
+        userRole: 'User'
     }
 ];
 

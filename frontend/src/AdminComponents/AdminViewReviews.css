@@ -249,11 +249,19 @@
     max-width: 420px;
     padding: 25px 30px;
     text-align: center;
+    background: white !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
 }
 
 .pet-modal .modal-title,
-.pet-modal h3:first-of-type {
-    display: none;
+.pet-modal h3:first-of-type,
+.pet-modal-title {
+    display: block;
+    font-size: 20px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 15px 0;
+    text-align: left;
 }
 
 .pet-modal-image {
@@ -280,20 +288,14 @@
 }
 
 .pet-modal-info {
-    text-align: center;
-}
-
-.pet-modal-info .pet-name-title {
-    font-size: 24px;
-    font-weight: 700;
-    color: #2c3e50;
-    margin: 0 0 15px 0;
+    text-align: left;
+    padding: 0 10px;
 }
 
 .pet-modal-info p {
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
     font-size: 14px;
-    color: #555;
+    color: #333;
     line-height: 1.6;
 }
 

@@ -7,7 +7,6 @@ const petCategories = ['Puppy', 'Adult', 'Medium', 'Senior', 'Small', 'Large'];
 
 const AdminViewPets = () => {
     const [pets, setPets] = useState([]);
-    const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -25,8 +24,6 @@ const AdminViewPets = () => {
             setPets(response.data);
         } catch (error) {
             console.error('Error fetching pets:', error);
-        } finally {
-            setLoading(false);
         }
     };
 

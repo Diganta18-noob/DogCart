@@ -98,10 +98,6 @@ const UserViewPets = () => {
         return { text: `In Stock: ${stock}`, className: 'stock-available' };
     };
 
-    const renderStars = (rating) => {
-        return '★'.repeat(rating) + '☆'.repeat(5 - rating);
-    };
-
     const handlePrevPage = () => {
         if (currentPage > 1) setCurrentPage(currentPage - 1);
     };

@@ -42,7 +42,7 @@ export default api;
 export const endpoints = {
     login: '/users/login',
     signup: '/users/register',
-    forgotPassword: '/users/forgot-password', // Assuming this might be added later, keeping structure
+    forgotPassword: '/users/forgot-password',
     users: '/users',
     userById: (id) => `/users/${id}`,
     pets: '/dogs',
@@ -52,7 +52,7 @@ export const endpoints = {
     ordersByUser: (userId) => `/orders/user/${userId}`,
     reviews: '/reviews',
     reviewById: (id) => `/reviews/${id}`,
-    reviewsByPet: (petId) => `/reviews/dog/${petId}`, // Adjusted to backend route convention
+    reviewsByPet: (petId) => `/reviews/dog/${petId}`,
     reviewsByUser: (userId) => `/reviews/user/${userId}`,
     dashboardStats: '/dashboard/stats',
     dashboardUsers: '/dashboard/users',

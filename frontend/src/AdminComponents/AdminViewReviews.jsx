@@ -140,6 +140,7 @@ const AdminViewReviews = () => {
                 <div className="modal-overlay" onClick={() => setShowPetModal(false)}>
                     <div className="modal-content pet-modal" onClick={(e) => e.stopPropagation()}>
                         <button className="modal-close" onClick={() => setShowPetModal(false)}>×</button>
+                        <h3 className="pet-modal-title">Pet Details</h3>
                         <div className="pet-modal-image">
                             {selectedPet.coverImage ? (
                                 <img src={selectedPet.coverImage} alt={selectedPet.dogName} />
@@ -148,11 +149,10 @@ const AdminViewReviews = () => {
                             )}
                         </div>
                         <div className="pet-modal-info">
-                            <h3 className="pet-name-title">{selectedPet.dogName}</h3>
+                            <p><strong>Name:</strong> {selectedPet.dogName}</p>
+                            <p><strong>Price:</strong> ₹{selectedPet.price?.toLocaleString()}</p>
                             <p><strong>Breed:</strong> {selectedPet.breed}</p>
                             <p><strong>Category:</strong> {selectedPet.category}</p>
-                            <p><strong>Price:</strong> ₹{selectedPet.price?.toLocaleString()}</p>
-                            <p><strong>Age:</strong> {selectedPet.age || 'N/A'}</p>
                         </div>
                     </div>
                 </div>
