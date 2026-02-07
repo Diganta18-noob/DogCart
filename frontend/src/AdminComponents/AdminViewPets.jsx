@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api, { endpoints } from '../apiConfig';
-import { petCategories } from '../mockData'; // Keeping categories mock for now
 import './AdminViewPets.css';
+
+const petCategories = ['Puppy', 'Adult', 'Medium', 'Senior', 'Small', 'Large'];
 
 const AdminViewPets = () => {
     const [pets, setPets] = useState([]);

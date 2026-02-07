@@ -3,8 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import api, { endpoints } from '../apiConfig';
-import { petCategories } from '../mockData';
 import './PetForm.css';
+
+const petCategories = ['Puppy', 'Adult', 'Medium', 'Senior', 'Small', 'Large'];
 
 const PetSchema = Yup.object().shape({
     dogName: Yup.string().required('Pet name is required'),

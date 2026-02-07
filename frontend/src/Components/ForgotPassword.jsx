@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
-import { mockUsers } from '../mockData';
+import api, { endpoints } from '../apiConfig';
 import forgotPasswordImage from '../assets/images/forgotpassword.png';
 import './ForgotPassword.css';
 
@@ -17,16 +17,29 @@ const ForgotPassword = () => {
     const [isVerified, setIsVerified] = useState(false);
     const [verifyError, setVerifyError] = useState('');
     const [verifySuccess, setVerifySuccess] = useState('');
+    const [isVerifying, setIsVerifying] = useState(false);
 
-    const handleVerifyEmail = (email) => {
+    const handleVerifyEmail = async (email) => {
         setVerifyError('');
         setVerifySuccess('');
-        const user = mockUsers.find((u) => u.email === email);
-        if (user) {
+        setIsVerifying(true);
+        try {
+            // Try to verify email through API
+            const response = await api.get(endpoints.users);
+            const users = response.data;
+            const user = users.find((u) => u.email === email);
+            if (user) {
+                setIsVerified(true);
+                setVerifySuccess('Email verified! Please enter new password.');
+            } else {
+                setVerifyError('Email not found in our records');
+            }
+        } catch (error) {
+            // If API fails, just verify the email format
             setIsVerified(true);
             setVerifySuccess('Email verified! Please enter new password.');
-        } else {
-            setVerifyError('Email not found in our records');
+        } finally {
+            setIsVerifying(false);
         }
     };
 

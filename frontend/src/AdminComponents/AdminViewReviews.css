@@ -2,6 +2,8 @@
     padding: 30px;
     max-width: 1400px;
     margin: 0 auto;
+    background: white;
+    min-height: 100vh;
 }
 
 .reviews-title {
@@ -244,13 +246,21 @@
 
 /* Pet Modal */
 .pet-modal {
-    max-width: 400px;
+    max-width: 420px;
+    padding: 25px 30px;
+    text-align: center;
+}
+
+.pet-modal .modal-title,
+.pet-modal h3:first-of-type {
+    display: none;
 }
 
 .pet-modal-image {
+    width: 100%;
     height: 200px;
-    background: #f8f9fa;
-    border-radius: 12px;
+    background: white;
+    border-radius: 10px;
     overflow: hidden;
     margin-bottom: 20px;
     display: flex;
@@ -266,22 +276,30 @@
 
 .pet-placeholder {
     font-size: 60px;
+    color: #999;
 }
 
-.pet-modal-info h3 {
-    margin: 0 0 15px 0;
-    font-size: 22px;
+.pet-modal-info {
+    text-align: center;
+}
+
+.pet-modal-info .pet-name-title {
+    font-size: 24px;
+    font-weight: 700;
     color: #2c3e50;
+    margin: 0 0 15px 0;
 }
 
 .pet-modal-info p {
     margin: 0 0 8px 0;
     font-size: 14px;
     color: #555;
+    line-height: 1.6;
 }
 
 .pet-modal-info strong {
     color: #2c3e50;
+    font-weight: 600;
 }
 
 /* Profile Modal */
