@@ -251,6 +251,8 @@
     text-align: center;
     background: white !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    border-radius: 20px;
+    /* Increased border radius */
 }
 
 .pet-modal .modal-title,

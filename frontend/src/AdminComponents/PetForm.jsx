@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 import api, { endpoints } from '../apiConfig';
 import './PetForm.css';
+import petFormBg from '../assets/images/dogcover.jpg';
 
 const petCategories = ['Puppy', 'Adult', 'Medium', 'Senior', 'Small', 'Large'];
 
@@ -20,7 +22,6 @@ const PetForm = ({ isEdit = false }) => {
     const navigate = useNavigate();
     const { id } = useParams();
     const [imagePreview, setImagePreview] = useState(null);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [loading, setLoading] = useState(isEdit);
     const [existingPet, setExistingPet] = useState(null);
 
@@ -39,6 +40,7 @@ const PetForm = ({ isEdit = false }) => {
             }
         } catch (error) {
             console.error('Error fetching pet:', error);
+            toast.error('Failed to load pet details');
         } finally {
             setLoading(false);
         }
@@ -88,21 +90,22 @@ const PetForm = ({ isEdit = false }) => {
 
             if (isEdit) {
                 await api.put(endpoints.petById(id), petData);
+                toast.success('Pet updated successfully!');
             } else {
                 await api.post(endpoints.pets, petData);
+                toast.success('Pet added successfully!');
             }
-            setShowSuccessModal(true);
+
+            // Navigate after a short delay to allow the toast to be seen, or immediately 
+            // since the ToastContainer is in App.jsx it will continue to show.
+            // Navigating immediately for better UX.
+            navigate('/admin/pets');
         } catch (error) {
             console.error('Error saving pet:', error);
-            alert('Error saving pet: ' + (error.response?.data?.message || error.message));
+            toast.error('Error saving pet: ' + (error.response?.data?.message || error.message));
         } finally {
             setSubmitting(false);
         }
-    };
-
-    const handleModalClose = () => {
-        setShowSuccessModal(false);
-        navigate('/admin/pets');
     };
 
     if (loading) {
@@ -110,7 +113,7 @@ const PetForm = ({ isEdit = false }) => {
     }
 
     return (
-        <div className="pet-form-container">
+        <div className="pet-form-container" style={{ backgroundImage: `url(${petFormBg})` }}>
             <div className="pet-form-card">
                 <h1 className="form-title">{isEdit ? 'Edit Pet' : 'Add New Pet'}</h1>
 
@@ -207,17 +210,6 @@ const PetForm = ({ isEdit = false }) => {
                     )}
                 </Formik>
             </div>
-
-            {showSuccessModal && (
-                <div className="modal-overlay">
-                    <div className="modal-content success-modal">
-                        <div className="success-icon">✓</div>
-                        <h3>Success!</h3>
-                        <p>Pet has been {isEdit ? 'updated' : 'added'} successfully.</p>
-                        <button onClick={handleModalClose} className="ok-btn">OK</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

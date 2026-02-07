@@ -109,8 +109,23 @@ const AdminViewPets = () => {
             {showDeleteModal && (
                 <div className="modal-overlay">
                     <div className="modal-content">
+                        <div style={{
+                            width: '72px',
+                            height: '72px',
+                            background: '#fef2f2',
+                            color: '#ef4444',
+                            borderRadius: '50%',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '32px',
+                            margin: '0 auto 20px',
+                            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.1)'
+                        }}>
+                            <span role="img" aria-label="warning">⚠️</span>
+                        </div>
                         <h3>Confirm Delete</h3>
-                        <p>Are you sure you want to delete "{petToDelete?.dogName}"?</p>
+                        <p>Are you sure you want to delete <span style={{ color: '#1e293b', fontWeight: 600 }}>"{petToDelete?.dogName}"</span>?</p>
                         <div className="modal-actions">
                             <button onClick={() => setShowDeleteModal(false)} className="cancel-btn">Cancel</button>
                             <button onClick={confirmDelete} className="confirm-delete-btn">Delete</button>
