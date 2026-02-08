@@ -43,6 +43,7 @@ export const endpoints = {
     login: '/users/login',
     signup: '/users/register',
     forgotPassword: '/users/forgot-password',
+    resetPassword: '/users/reset-password',
     users: '/users',
     userById: (id) => `/users/${id}`,
     pets: '/dogs',

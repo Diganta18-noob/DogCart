@@ -44,13 +44,20 @@ const ForgotPassword = () => {
         }
     };
 
-    const handleSubmit = (values, { setSubmitting }) => {
-        // Simulate API call delay
-        setTimeout(() => {
+    const handleSubmit = async (values, { setSubmitting }) => {
+        try {
+            await api.put(endpoints.resetPassword, {
+                email: values.email,
+                password: values.newPassword
+            });
             toast.success('Password reset successful! Please login with your new password.');
             navigate('/login');
+        } catch (error) {
+            console.error('Password reset error:', error);
+            toast.error(error.response?.data?.message || 'Failed to reset password. Please try again.');
+        } finally {
             setSubmitting(false);
-        }, 1000);
+        }
     };
 
     return (
