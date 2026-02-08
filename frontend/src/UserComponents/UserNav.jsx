@@ -47,6 +47,7 @@ const UserNav = () => {
                         <ul className="nav-links">
                             <li><NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Home</NavLink></li>
                             <li><NavLink to="/pets" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Pets</NavLink></li>
+                            <li><NavLink to="/my-orders" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Orders</NavLink></li>
                             <li><NavLink to="/my-reviews" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Review</NavLink></li>
                         </ul>
 
