@@ -11,6 +11,16 @@ const addUser = async (req, res) => {
     }
 };
 
+// Get all users
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find({});
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Get user by email and password (login)
 const getUserByEmailAndPassword = async (req, res) => {
     try {
@@ -61,5 +71,6 @@ const resetPassword = async (req, res) => {
 module.exports = {
     addUser,
     getUserByEmailAndPassword,
-    resetPassword
+    resetPassword,
+    getAllUsers
 };

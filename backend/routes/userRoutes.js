@@ -3,8 +3,12 @@ const router = express.Router();
 const {
     addUser,
     getUserByEmailAndPassword,
-    resetPassword
+    resetPassword,
+    getAllUsers
 } = require('../controllers/userController');
+
+// GET all users
+router.get('/', getAllUsers);
 
 // POST register user
 router.post('/register', addUser);
