@@ -29,6 +29,12 @@ const getDogById = async (req, res) => {
 // Add a new dog
 const addDog = async (req, res) => {
     try {
+        // Check if dog with same name already exists
+        const existingDog = await Dog.findOne({ dogName: req.body.dogName });
+        if (existingDog) {
+            return res.status(400).json({ message: `A pet with the name "${req.body.dogName}" already exists` });
+        }
+
         const newDog = await Dog.create(req.body);
         res.status(201).json({ message: 'Dog Added Successfully', dog: newDog });
     } catch (error) {

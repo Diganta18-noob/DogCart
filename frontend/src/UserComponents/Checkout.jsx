@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { selectCartItems, selectCartTotal, clearCart } from '../cartSlice';
 import { selectUser } from '../userSlice';
 import api, { endpoints } from '../apiConfig';
+import { toast } from 'react-toastify';
 import './Checkout.css';
 
 const DEFAULT_PET_IMAGE = 'https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=100&h=100&fit=crop';
@@ -25,6 +26,13 @@ const Checkout = () => {
             return;
         }
 
+        // Check stock availability before placing order
+        const insufficientStockItem = items.find(item => item.quantity > (item.stockQuantity || 0));
+        if (insufficientStockItem) {
+            toast.error(`Insufficient stock for ${insufficientStockItem.name}. Available: ${insufficientStockItem.stockQuantity || 0}, Requested: ${insufficientStockItem.quantity}`);
+            return;
+        }
+
         setIsSubmitting(true);
 
         const orderData = {
@@ -42,8 +50,7 @@ const Checkout = () => {
             setShowSuccess(true);
         } catch (error) {
             console.error('Error placing order:', error);
-            // Still show success for demo purposes
-            setShowSuccess(true);
+            toast.error(error.response?.data?.message || 'Failed to place order. Please try again.');
         } finally {
             setIsSubmitting(false);
         }

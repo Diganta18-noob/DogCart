@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToCart } from '../cartSlice';
 import api, { endpoints } from '../apiConfig';
+import { toast } from 'react-toastify';
 import './UserViewPets.css';
 
 const ITEMS_PER_PAGE = 4;
@@ -60,12 +61,20 @@ const UserViewPets = () => {
 
     const handleAddToCart = (pet) => {
         const qty = quantities[pet._id] || 1;
+
+        // Validate stock before adding to cart
+        if (qty > pet.stockQuantity) {
+            toast.error(`Insufficient stock for ${pet.dogName}. Available: ${pet.stockQuantity}, Requested: ${qty}`);
+            return;
+        }
+
         dispatch(addToCart({
             id: pet._id,
             name: pet.dogName,
             price: pet.price,
             image: pet.coverImage,
-            quantity: qty
+            quantity: qty,
+            stockQuantity: pet.stockQuantity
         }));
         setAddedPetName(pet.dogName);
         setShowAddedModal(true);
@@ -74,7 +83,7 @@ const UserViewPets = () => {
 
     const fetchPetReviews = async (petId) => {
         try {
-            const response = await api.get(`${endpoints.reviews}?petId=${petId}`);
+            const response = await api.get(endpoints.reviewsByPet(petId));
             setReviews(response.data || []);
         } catch (error) {
             console.error('Error fetching reviews:', error);
@@ -192,23 +201,81 @@ const UserViewPets = () => {
             {showReviews && selectedPet && (
                 <div className="modal-overlay" onClick={() => setShowReviews(false)}>
                     <div className="modal-content reviews-modal" onClick={(e) => e.stopPropagation()}>
-                        <button className="modal-close-x" onClick={() => setShowReviews(false)}>×</button>
-                        <h3>Reviews for {selectedPet.dogName}</h3>
-                        <div className="reviews-list">
-                            {reviews.length > 0 ? (
-                                reviews.map(review => (
-                                    <div key={review._id} className="review-item">
-                                        <div className="review-header">
-                                            <span className="reviewer-badge">{review.username || 'User'}</span>
-                                            <span className="rating">⭐ {review.rating}/5</span>
-                                        </div>
-                                        <p className="review-text">{review.text}</p>
-                                        <span className="review-date">{review.date}</span>
+                        <div className="modal-header">
+                            <h3>Reviews</h3>
+                            <button className="modal-close-icon" onClick={() => setShowReviews(false)}>
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            </button>
+                        </div>
+
+                        <div className="modal-body">
+                            {/* Rating Summary */}
+                            <div className="rating-overview">
+                                <div className="rating-score">
+                                    <span className="score-number">
+                                        {reviews.length > 0
+                                            ? (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length).toFixed(1)
+                                            : '0.0'}
+                                    </span>
+                                    <div className="score-stars">
+                                        {[1, 2, 3, 4, 5].map(star => (
+                                            <span key={star} className={`star ${star <= (reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length || 0) ? 'filled' : ''}`}>★</span>
+                                        ))}
                                     </div>
-                                ))
-                            ) : (
-                                <p className="no-reviews">No reviews yet.</p>
-                            )}
+                                    <span className="total-reviews">Based on {reviews.length} reviews</span>
+                                </div>
+
+                                <div className="rating-bars">
+                                    {[5, 4, 3, 2, 1].map(star => {
+                                        const count = reviews.filter(r => r.rating === star).length;
+                                        const percentage = reviews.length > 0 ? (count / reviews.length) * 100 : 0;
+                                        return (
+                                            <div key={star} className="rating-bar-row">
+                                                <span className="star-label">{star}</span>
+                                                <div className="progress-track">
+                                                    <div className="progress-fill" style={{ width: `${percentage}%` }}></div>
+                                                </div>
+                                                <span className="percentage-label">{Math.round(percentage)}%</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Reviews List */}
+                            <div className="reviews-list">
+                                {reviews.length > 0 ? (
+                                    reviews.map(review => (
+                                        <div key={review._id} className="review-item">
+                                            <div className="review-header">
+                                                <div className="reviewer-info">
+                                                    <div className="reviewer-avatar">
+                                                        {review.username ? review.username.charAt(0).toUpperCase() : 'U'}
+                                                    </div>
+                                                    <div className="reviewer-details">
+                                                        <span className="reviewer-name">{review.username || 'User'}</span>
+                                                        <span className="review-meta">{review.date} • Verified Purchase</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="item-rating">
+                                                {[1, 2, 3, 4, 5].map(s => (
+                                                    <span key={s} className={`star-small ${s <= review.rating ? 'filled' : ''}`}>★</span>
+                                                ))}
+                                            </div>
+                                            <p className="review-text">{review.text}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <p className="no-reviews">No reviews yet. Be the first to review!</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="modal-footer">
+                            <button onClick={() => handleWriteReview(selectedPet)} className="write-review-btn-large">
+                                ✎ Write a Review
+                            </button>
                         </div>
                     </div>
                 </div>
