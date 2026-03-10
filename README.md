@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <a href="#"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=FF6B35&center=true&vCenter=true&width=700&lines=🐾+Premium+Dog+Products+%26+Accessories;🛒+Full+E-Commerce+Shopping+Experience;👤+User+Authentication+%26+Profiles;📦+Product+Catalog+%26+Cart+System;🎨+Beautiful+Material+Design+UI;⚡+React+%2B+Redux+%2B+TailwindCSS" alt="Typing SVG" /></a>
+  <a href="#"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&pause=1000&color=FF6B35&center=true&vCenter=true&width=700&lines=Premium+Dog+Products+%26+Accessories;Full+E-Commerce+Shopping+Experience;User+Authentication+%26+Profiles;Product+Catalog+%26+Cart+System;Beautiful+Material+Design+UI;React+%2B+Redux+%2B+TailwindCSS" alt="Typing SVG" /></a>
 </p>
 
 <p align="center">
@@ -38,6 +38,7 @@
 <td width="50%">
 
 ### 🛍️ Shopping Experience
+
 - 🐾 Rich product catalog with categories
 - 🛒 Shopping cart with quantity management
 - 🔍 Advanced search & filtering
@@ -45,6 +46,7 @@
 - ⭐ Product ratings & reviews
 
 ### 👤 User Management
+
 - 🔐 JWT-based authentication
 - 📝 User registration & login
 - 👤 Profile management
@@ -54,6 +56,7 @@
 <td width="50%">
 
 ### 🎨 Premium UI/UX
+
 - 🧩 Material UI v5 components
 - 🎨 Tailwind CSS custom styling
 - 📊 MUI X Data Grid for admin
@@ -61,6 +64,7 @@
 - 🔔 Toast notifications (React Toastify)
 
 ### ⚙️ Admin Panel
+
 - 📊 Product management dashboard
 - 👥 User management with seed data
 - 📈 Order management system
@@ -113,42 +117,42 @@ DogCart/
 <tr>
 <td>
 
-| Tech | Purpose |
-|:----:|:-------:|
-| ⚛️ React 18 | UI Framework |
-| 🧩 MUI v5 | Components |
-| 🎨 Tailwind CSS | Styling |
-| 📦 Redux Toolkit | State |
-| 🔄 Tanstack Query | Data Fetching |
-| 📋 Formik | Forms |
-| 🛡️ Yup | Validation |
-| 🗺️ React Router 6 | Navigation |
-| 🔔 React Toastify | Toasts |
-| 📊 MUI X Data Grid | Tables |
-| 🅱️ Bootstrap 5 | Grid Layout |
+|        Tech        |    Purpose    |
+| :----------------: | :-----------: |
+|    ⚛️ React 18     | UI Framework  |
+|     🧩 MUI v5      |  Components   |
+|  🎨 Tailwind CSS   |    Styling    |
+|  📦 Redux Toolkit  |     State     |
+| 🔄 Tanstack Query  | Data Fetching |
+|     📋 Formik      |     Forms     |
+|       🛡️ Yup       |  Validation   |
+| 🗺️ React Router 6  |  Navigation   |
+| 🔔 React Toastify  |    Toasts     |
+| 📊 MUI X Data Grid |    Tables     |
+|   🅱️ Bootstrap 5   |  Grid Layout  |
 
 </td>
 <td>
 
-| Tech | Purpose |
-|:----:|:-------:|
-| 🚀 Express 4 | API Server |
-| 🍃 Mongoose 7 | MongoDB ODM |
-| 🔐 JWT | Auth Tokens |
-| 🌐 CORS | Cross-Origin |
-| ⚙️ Nodemon | Dev Server |
-| 🌱 Seed Scripts | Demo Data |
+|      Tech       |   Purpose    |
+| :-------------: | :----------: |
+|  🚀 Express 4   |  API Server  |
+|  🍃 Mongoose 7  | MongoDB ODM  |
+|     🔐 JWT      | Auth Tokens  |
+|     🌐 CORS     | Cross-Origin |
+|   ⚙️ Nodemon    |  Dev Server  |
+| 🌱 Seed Scripts |  Demo Data   |
 
 </td>
 <td>
 
-| Tech | Purpose |
-|:----:|:-------:|
-| 🧪 Jest | Test Runner |
-| 🧬 React Testing Lib | Component Tests |
-| 🎭 User Event | Interaction Tests |
-| 🔧 Axios Mock | API Mocking |
-| 📊 Web Vitals | Performance |
+|         Tech         |      Purpose      |
+| :------------------: | :---------------: |
+|       🧪 Jest        |    Test Runner    |
+| 🧬 React Testing Lib |  Component Tests  |
+|    🎭 User Event     | Interaction Tests |
+|    🔧 Axios Mock     |    API Mocking    |
+|    📊 Web Vitals     |    Performance    |
 
 </td>
 </tr>
