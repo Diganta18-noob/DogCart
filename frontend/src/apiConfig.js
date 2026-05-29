@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
@@ -40,21 +40,22 @@ api.interceptors.response.use(
 export default api;
 
 export const endpoints = {
-    login: '/users/login',
-    signup: '/users/register',
-    forgotPassword: '/users/forgot-password',
-    resetPassword: '/users/reset-password',
-    users: '/users',
-    userById: (id) => `/users/${id}`,
-    pets: '/dogs',
-    petById: (id) => `/dogs/${id}`,
-    orders: '/orders',
-    orderById: (id) => `/orders/${id}`,
-    ordersByUser: (userId) => `/orders/user/${userId}`,
-    reviews: '/reviews',
-    reviewById: (id) => `/reviews/${id}`,
-    reviewsByPet: (petId) => `/reviews/dog/${petId}`,
-    reviewsByUser: (userId) => `/reviews/user/${userId}`,
-    dashboardStats: '/dashboard/stats',
-    dashboardUsers: '/dashboard/users',
+    login: '/api/users/login',
+    signup: '/api/users/register',
+    forgotPassword: '/api/users/forgot-password',
+    resetPassword: '/api/users/reset-password',
+    verifyEmail: '/api/users/verify-email',
+    users: '/api/users',
+    userById: (id) => `/api/users/${id}`,
+    pets: '/api/dogs',
+    petById: (id) => `/api/dogs/${id}`,
+    orders: '/api/orders',
+    orderById: (id) => `/api/orders/${id}`,
+    ordersByUser: (userId) => `/api/orders/user/${userId}`,
+    reviews: '/api/reviews',
+    reviewById: (id) => `/api/reviews/${id}`,
+    reviewsByPet: (petId) => `/api/reviews/dog/${petId}`,
+    reviewsByUser: (userId) => `/api/reviews/user/${userId}`,
+    dashboardStats: '/api/dashboard/stats',
+    dashboardUsers: '/api/dashboard/users',
 };

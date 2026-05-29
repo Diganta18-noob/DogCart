@@ -22,14 +22,7 @@ const Checkout = () => {
 
     const handlePlaceOrder = async () => {
         if (!shippingAddress || !billingAddress) {
-            alert('Please fill in all address fields');
-            return;
-        }
-
-        // Check stock availability before placing order
-        const insufficientStockItem = items.find(item => item.quantity > (item.stockQuantity || 0));
-        if (insufficientStockItem) {
-            toast.error(`Insufficient stock for ${insufficientStockItem.name}. Available: ${insufficientStockItem.stockQuantity || 0}, Requested: ${insufficientStockItem.quantity}`);
+            toast.warning('Please fill in all address fields');
             return;
         }
 
@@ -48,6 +41,7 @@ const Checkout = () => {
         try {
             await api.post(endpoints.orders, orderData);
             setShowSuccess(true);
+            toast.success('Order placed successfully!');
         } catch (error) {
             console.error('Error placing order:', error);
             toast.error(error.response?.data?.message || 'Failed to place order. Please try again.');
@@ -63,87 +57,135 @@ const Checkout = () => {
 
     if (items.length === 0 && !showSuccess) {
         return (
-            <div className="checkout-container">
-                <div className="empty-cart-message">
-                    <span className="empty-icon">🛒</span>
-                    <h2>Your cart is empty</h2>
-                    <p>Add some pets to your cart before checking out.</p>
-                    <button onClick={() => navigate('/pets')} className="browse-btn">Browse Pets</button>
+            <div className="min-h-screen bg-base-100 relative overflow-hidden bg-grid-pattern pt-24 pb-16 px-4 flex items-center justify-center">
+                <div className="glass-card max-w-md w-full p-8 text-center flex flex-col items-center gap-4">
+                    <span className="text-5xl animate-bounce">🛒</span>
+                    <h2 className="text-2xl font-bold font-outfit text-white">Your cart is empty</h2>
+                    <p className="text-slate-400 text-sm">Add some pets to your cart before checking out.</p>
+                    <button onClick={() => navigate('/pets')} className="btn btn-gradient-primary rounded-xl text-white mt-2 w-full">
+                        Browse Pets
+                    </button>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="checkout-container">
-            <h1 className="checkout-title">Order Confirmation</h1>
+        <div className="min-h-screen bg-base-100 relative overflow-hidden bg-grid-pattern pt-24 pb-16 px-4 md:px-8">
+            {/* Ambient background glows */}
+            <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
+            <div className="absolute bottom-1/4 right-1/10 w-[450px] h-[450px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none animate-float"></div>
 
-            <div className="checkout-content">
-                <div className="order-summary">
-                    <h2>Invoice</h2>
-                    <div className="order-items">
-                        {items.map(item => (
-                            <div key={item.id} className="order-item">
-                                <img
-                                    src={item.image || DEFAULT_PET_IMAGE}
-                                    alt={item.name}
-                                    className="checkout-item-image"
-                                    onError={(e) => { e.target.src = DEFAULT_PET_IMAGE; }}
-                                />
-                                <div className="item-info">
-                                    <span className="item-name">{item.name}</span>
-                                    <div className="item-meta">
-                                        <span className="item-qty">Quantity: {item.quantity}</span>
-                                        <span className="item-price">Price: ₹{item.price?.toLocaleString()}</span>
-                                    </div>
-                                </div>
-                                <span className="item-total">₹{(item.price * item.quantity).toLocaleString()}</span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="order-total">
-                        <span>Total Amount:</span>
-                        <span className="total-value">₹{total.toLocaleString()}</span>
-                    </div>
+            <div className="max-w-5xl mx-auto flex flex-col gap-8 relative z-10">
+                <div>
+                    <h1 className="text-3xl font-bold font-outfit text-gradient-primary">
+                        📝 Checkout Summary
+                    </h1>
+                    <p className="text-slate-400 text-sm mt-1">Review your invoice details and enter the shipping information.</p>
                 </div>
 
-                <div className="address-section">
-                    <h2>Delivery Details</h2>
-                    <div className="form-group">
-                        <label>Shipping Address*</label>
-                        <textarea
-                            value={shippingAddress}
-                            onChange={(e) => setShippingAddress(e.target.value)}
-                            placeholder="Enter your shipping address"
-                            rows="3"
-                        />
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* Invoice Summary */}
+                    <div className="lg:col-span-7 glass-card p-6 md:p-8 flex flex-col gap-6 border-white/5 bg-base-200/50">
+                        <h2 className="text-xl font-bold font-outfit text-slate-200 pb-3 border-b border-white/5 flex items-center gap-2">
+                            <span>📄 Invoice</span>
+                        </h2>
+
+                        <div className="flex flex-col gap-4 overflow-y-auto max-h-[350px] pr-2">
+                            {items.map(item => (
+                                <div key={item.id} className="flex gap-4 items-center bg-base-300/30 p-4 rounded-xl border border-white/5">
+                                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-base-200 flex-shrink-0 border border-white/5">
+                                        <img
+                                            src={item.image || DEFAULT_PET_IMAGE}
+                                            alt={item.name}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => { e.target.src = DEFAULT_PET_IMAGE; }}
+                                        />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <h4 className="font-bold text-slate-200 truncate text-sm">{item.name}</h4>
+                                        <div className="flex gap-4 text-xs text-slate-400 mt-0.5">
+                                            <span>Qty: {item.quantity}</span>
+                                            <span>Price: ₹{item.price?.toLocaleString()}</span>
+                                        </div>
+                                    </div>
+                                    <span className="font-bold text-slate-100 text-sm">
+                                        ₹{(item.price * item.quantity).toLocaleString()}
+                                    </span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="flex justify-between items-center pt-4 border-t border-white/5 text-lg">
+                            <span className="font-semibold text-slate-300">Total Amount:</span>
+                            <span className="text-2xl font-extrabold font-outfit text-primary">₹{total.toLocaleString()}</span>
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Billing Address*</label>
-                        <textarea
-                            value={billingAddress}
-                            onChange={(e) => setBillingAddress(e.target.value)}
-                            placeholder="Enter your billing address"
-                            rows="3"
-                        />
+
+                    {/* Delivery Form */}
+                    <div className="lg:col-span-5 glass-card p-6 md:p-8 flex flex-col gap-6 border-white/5 bg-base-200/50">
+                        <h2 className="text-xl font-bold font-outfit text-slate-200 pb-3 border-b border-white/5">
+                            🚚 Delivery Details
+                        </h2>
+
+                        <div className="flex flex-col gap-4">
+                            <div className="form-control w-full">
+                                <label className="label py-1">
+                                    <span className="label-text font-medium text-slate-300">Shipping Address*</span>
+                                </label>
+                                <textarea
+                                    value={shippingAddress}
+                                    onChange={(e) => setShippingAddress(e.target.value)}
+                                    placeholder="Enter complete shipping details"
+                                    className="textarea-premium h-20"
+                                />
+                            </div>
+
+                            <div className="form-control w-full">
+                                <label className="label py-1">
+                                    <span className="label-text font-medium text-slate-300">Billing Address*</span>
+                                </label>
+                                <textarea
+                                    value={billingAddress}
+                                    onChange={(e) => setBillingAddress(e.target.value)}
+                                    placeholder="Enter complete billing details"
+                                    className="textarea-premium h-20"
+                                />
+                            </div>
+
+                            <button
+                                onClick={handlePlaceOrder}
+                                className="btn btn-gradient-primary w-full mt-2 text-white font-bold uppercase tracking-wider rounded-xl"
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <span className="loading loading-spinner loading-xs"></span>
+                                        Placing Order...
+                                    </>
+                                ) : (
+                                    'Place Order'
+                                )}
+                            </button>
+                        </div>
                     </div>
-                    <button
-                        onClick={handlePlaceOrder}
-                        className="place-order-btn"
-                        disabled={isSubmitting}
-                    >
-                        {isSubmitting ? 'Placing Order...' : 'Place Order'}
-                    </button>
                 </div>
             </div>
 
+            {/* Success Modal */}
             {showSuccess && (
-                <div className="modal-overlay">
-                    <div className="modal-content success-modal">
-                        <div className="success-icon">✓</div>
-                        <h3>Order Placed Successfully!</h3>
-                        <p>Thank you for your order. You will receive a confirmation email shortly.</p>
-                        <button onClick={handleSuccessClose} className="ok-btn">View My Orders</button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="glass-card max-w-md w-full p-8 mx-4 text-center flex flex-col items-center gap-4 animate-scale-in border border-white/10">
+                        <div className="w-16 h-16 rounded-full bg-success/15 border border-success/30 text-success flex items-center justify-center text-3xl font-bold shadow-lg shadow-success/10 animate-bounce">
+                            ✓
+                        </div>
+                        <h3 className="text-2xl font-bold font-outfit text-gradient-primary">Order Placed!</h3>
+                        <p className="text-slate-300 text-sm">
+                            Thank you for your order. Your purchase has been successfully processed.
+                        </p>
+                        <button onClick={handleSuccessClose} className="btn btn-success text-white w-full rounded-xl mt-2 font-semibold">
+                            View My Orders
+                        </button>
                     </div>
                 </div>
             )}

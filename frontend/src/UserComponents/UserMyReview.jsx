@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { selectUser } from '../userSlice';
 import api, { endpoints } from '../apiConfig';
+import { toast } from 'react-toastify';
 import './UserMyReview.css';
 
 const EMOJI_RATINGS = [
@@ -47,7 +48,6 @@ const UserMyReview = () => {
                     const reviewsRes = await api.get(endpoints.reviewsByUser(user.id));
                     setReviews(reviewsRes.data || []);
                 } catch (error) {
-                    // 404 means no reviews found - that's ok
                     if (error.response?.status === 404) {
                         setReviews([]);
                     } else {
@@ -80,7 +80,6 @@ const UserMyReview = () => {
             return;
         }
 
-        // Backend expects: user, dog, reviewText, rating
         const reviewData = {
             user: user?.id,
             dog: selectedPetId,
@@ -91,6 +90,7 @@ const UserMyReview = () => {
         try {
             await api.post(endpoints.reviews, reviewData);
             setSubmitSuccess('Review submitted successfully!');
+            toast.success('Review submitted successfully!');
             setSelectedPetId('');
             setRating(0);
             setReviewText('');
@@ -106,9 +106,9 @@ const UserMyReview = () => {
         try {
             await api.delete(`${endpoints.reviews}/${reviewToDelete._id}`);
             setReviews(reviews.filter(r => r._id !== reviewToDelete._id));
+            toast.success('Review deleted successfully.');
         } catch (error) {
             console.error('Error deleting review:', error);
-            // Fallback to local state
             setReviews(reviews.filter(r => r._id !== reviewToDelete._id));
         }
         setShowDeleteConfirm(false);
@@ -116,7 +116,6 @@ const UserMyReview = () => {
     };
 
     const handleViewPet = (dog) => {
-        // dog is the populated dog object from the review
         if (dog) {
             setSelectedPetForView(dog);
             setShowPetModal(true);
@@ -126,141 +125,212 @@ const UserMyReview = () => {
     const formatDate = (dateString) => {
         if (!dateString) return 'N/A';
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-GB');
+        return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
     };
 
-    const renderStars = (rating) => '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    const renderStars = (rating) => {
+        return (
+            <div className="flex gap-0.5 text-amber-400">
+                {[1, 2, 3, 4, 5].map(s => (
+                    <span key={s} className="text-sm">
+                        {s <= rating ? '★' : '☆'}
+                    </span>
+                ))}
+            </div>
+        );
+    };
 
-    if (loading) return <div className="loading">Loading...</div>;
+    if (loading) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-base-100 gap-4">
+                <span className="loading loading-ring loading-lg text-primary"></span>
+                <p className="text-slate-400 font-medium">Loading reviews...</p>
+            </div>
+        );
+    }
 
     return (
-        <div className="my-reviews-container">
-            {/* Share Your Thoughts Form */}
-            <div className="share-thoughts-section">
-                <h2 className="section-title">Share Your Thoughts</h2>
-                <form onSubmit={handleSubmitReview} className="review-form-card">
-                    <div className="form-group">
-                        <label>Select Pet</label>
-                        <select
-                            value={selectedPetId}
-                            onChange={(e) => setSelectedPetId(e.target.value)}
-                            className="form-select"
-                        >
-                            <option value="">Choose a pet...</option>
-                            {pets.map(pet => (
-                                <option key={pet._id} value={pet._id}>{pet.dogName}</option>
-                            ))}
-                        </select>
-                    </div>
+        <div className="min-h-screen bg-base-100 relative overflow-hidden bg-grid-pattern pt-24 pb-16 px-4 md:px-8">
+            {/* Ambient background glows */}
+            <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse-glow"></div>
+            <div className="absolute bottom-1/4 right-1/10 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[120px] pointer-events-none animate-float"></div>
 
-                    <div className="form-group">
-                        <label>How was your experience?</label>
-                        <div className="emoji-rating">
-                            {EMOJI_RATINGS.map(item => (
-                                <button
-                                    key={item.value}
-                                    type="button"
-                                    className={`emoji-btn ${rating === item.value ? 'active' : ''}`}
-                                    onClick={() => setRating(item.value)}
-                                    title={item.label}
+            <div className="max-w-6xl mx-auto flex flex-col gap-8 relative z-10">
+                <div>
+                    <h1 className="text-3xl font-bold font-outfit text-gradient-primary">
+                        ✎ Reviews & Feedback
+                    </h1>
+                    <p className="text-slate-400 text-sm mt-1">Submit your pet adoption stories or manage past reviews.</p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    {/* Share Thoughts Form */}
+                    <div className="lg:col-span-5 glass-card p-6 md:p-8 flex flex-col gap-5 border-white/5 bg-base-200/50">
+                        <h2 className="text-xl font-bold font-outfit text-slate-200 pb-2 border-b border-white/5">
+                            Share Your Thoughts
+                        </h2>
+                        
+                        <form onSubmit={handleSubmitReview} className="flex flex-col gap-4">
+                            <div className="form-control w-full">
+                                <label className="label py-1">
+                                    <span className="label-text font-medium text-slate-300">Select Pet</span>
+                                </label>
+                                <select
+                                    value={selectedPetId}
+                                    onChange={(e) => setSelectedPetId(e.target.value)}
+                                    className="select-premium"
                                 >
-                                    {item.emoji}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
+                                    <option value="">Choose a pet...</option>
+                                    {pets.map(pet => (
+                                        <option key={pet._id} value={pet._id}>{pet.dogName}</option>
+                                    ))}
+                                </select>
+                            </div>
 
-                    <div className="form-group">
-                        <label>Your Review</label>
-                        <textarea
-                            value={reviewText}
-                            onChange={(e) => setReviewText(e.target.value)}
-                            placeholder="Write your review here..."
-                            rows="4"
-                            className="form-textarea"
-                        />
-                    </div>
-
-                    {formError && <div className="form-error">{formError}</div>}
-                    {submitSuccess && <div className="form-success">{submitSuccess}</div>}
-
-                    <button type="submit" className="submit-review-btn">
-                        Submit Review
-                    </button>
-                </form>
-            </div>
-
-            {/* My Thoughts Section */}
-            <div className="my-thoughts-section">
-                <h2 className="section-title">My Thoughts</h2>
-
-                {reviews.length === 0 ? (
-                    <div className="no-reviews-card">
-                        <span className="empty-icon">📝</span>
-                        <p>You haven't written any reviews yet.</p>
-                    </div>
-                ) : (
-                    <div className="reviews-grid">
-                        {reviews.map(review => (
-                            <div key={review._id} className="review-card">
-                                <div className="review-card-header">
-                                    <h3 className="review-pet-name">{review.dog?.dogName || 'Unknown Pet'}</h3>
-                                    <span className="review-rating">Rating:{renderStars(review.rating)}</span>
-                                </div>
-                                <span className="review-date">Date: {formatDate(review.date)}</span>
-                                <p className="review-text">{review.reviewText}</p>
-                                <div className="review-actions">
-                                    <button
-                                        onClick={() => handleViewPet(review.dog)}
-                                        className="view-pet-btn"
-                                    >
-                                        View Pet
-                                    </button>
-                                    <button
-                                        onClick={() => { setReviewToDelete(review); setShowDeleteConfirm(true); }}
-                                        className="delete-review-btn"
-                                    >
-                                        Delete Review
-                                    </button>
+                            <div className="form-control w-full">
+                                <label className="label py-1">
+                                    <span className="label-text font-medium text-slate-300">How was your experience?</span>
+                                </label>
+                                <div className="flex justify-around bg-base-300/30 p-3 rounded-2xl border border-white/5">
+                                    {EMOJI_RATINGS.map(item => (
+                                        <button
+                                            key={item.value}
+                                            type="button"
+                                            className={`text-2xl p-2 rounded-xl transition-all duration-200 ${rating === item.value ? 'bg-primary/20 scale-125 border border-primary/20' : 'hover:scale-110 opacity-70'}`}
+                                            onClick={() => setRating(item.value)}
+                                            title={item.label}
+                                        >
+                                            {item.emoji}
+                                        </button>
+                                    ))}
                                 </div>
                             </div>
-                        ))}
+
+                            <div className="form-control w-full">
+                                <label className="label py-1">
+                                    <span className="label-text font-medium text-slate-300">Your Review</span>
+                                </label>
+                                <textarea
+                                    value={reviewText}
+                                    onChange={(e) => setReviewText(e.target.value)}
+                                    placeholder="Tell us about your pet..."
+                                    rows="4"
+                                    className="textarea-premium"
+                                />
+                            </div>
+
+                            {formError && (
+                                <div className="alert alert-error bg-error/10 border-error/20 text-error text-xs rounded-xl p-3 flex gap-2 items-center">
+                                    <span>{formError}</span>
+                                </div>
+                            )}
+
+                            {submitSuccess && (
+                                <div className="alert alert-success bg-success/10 border-success/20 text-success text-xs rounded-xl p-3 flex gap-2 items-center">
+                                    <span>{submitSuccess}</span>
+                                </div>
+                            )}
+
+                            <button type="submit" className="btn btn-gradient-primary w-full mt-2 text-white font-bold rounded-xl uppercase">
+                                Submit Review
+                            </button>
+                        </form>
                     </div>
-                )}
+
+                    {/* My Thoughts List */}
+                    <div className="lg:col-span-7 flex flex-col gap-6">
+                        <h2 className="text-xl font-bold font-outfit text-slate-200 pb-2 border-b border-white/5">
+                            My Reviews ({reviews.length})
+                        </h2>
+
+                        {reviews.length === 0 ? (
+                            <div className="glass-card p-12 text-center flex flex-col items-center gap-4 border-white/5 bg-base-200/50">
+                                <span className="text-5xl">📝</span>
+                                <p className="text-slate-300 font-bold text-lg">No reviews written yet.</p>
+                                <p className="text-slate-500 text-sm">Write reviews for adopted dogs to display them here.</p>
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 gap-4">
+                                {reviews.map(review => (
+                                    <div key={review._id} className="glass-card p-5 border-white/5 bg-base-200/50 flex flex-col gap-3 transition-all duration-300 hover:border-primary/10">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-lg font-bold font-outfit text-white">{review.dog?.dogName || 'Unknown Pet'}</h3>
+                                                <span className="text-[10px] text-slate-500 font-medium">Reviewed on: {formatDate(review.date)}</span>
+                                            </div>
+                                            {renderStars(review.rating)}
+                                        </div>
+                                        
+                                        <p className="text-slate-300 text-sm leading-relaxed bg-base-300/20 p-3 rounded-xl border border-white/5">{review.reviewText}</p>
+                                        
+                                        <div className="flex justify-end gap-2 pt-2 border-t border-white/5">
+                                            <button
+                                                onClick={() => handleViewPet(review.dog)}
+                                                className="btn btn-xs btn-outline border-white/10 hover:bg-white/5 text-slate-300 rounded-lg"
+                                            >
+                                                View Pet
+                                            </button>
+                                            <button
+                                                onClick={() => { setReviewToDelete(review); setShowDeleteConfirm(true); }}
+                                                className="btn btn-xs btn-ghost text-slate-500 hover:text-error hover:bg-error/10 rounded-lg"
+                                            >
+                                                Delete Review
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* View Pet Modal */}
             {showPetModal && selectedPetForView && (
-                <div className="modal-overlay" onClick={() => setShowPetModal(false)}>
-                    <div className="modal-content pet-modal" onClick={(e) => e.stopPropagation()}>
-                        <button className="modal-close" onClick={() => setShowPetModal(false)}>×</button>
-                        <div className="pet-modal-image">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setShowPetModal(false)}>
+                    <div className="glass-card max-w-sm w-full overflow-hidden animate-scale-in border border-white/10" onClick={(e) => e.stopPropagation()}>
+                        <div className="h-48 relative bg-base-300">
                             {selectedPetForView.coverImage ? (
-                                <img src={selectedPetForView.coverImage} alt={selectedPetForView.dogName} />
+                                <img src={selectedPetForView.coverImage} alt={selectedPetForView.dogName} className="w-full h-full object-cover" />
                             ) : (
-                                <div className="pet-placeholder">🐾</div>
+                                <div className="w-full h-full flex items-center justify-center text-4xl text-slate-600 bg-slate-800">🐾</div>
                             )}
+                            <button className="btn btn-circle btn-sm bg-base-100/80 hover:bg-base-100 border-0 absolute top-3 right-3 text-slate-300" onClick={() => setShowPetModal(false)}>✕</button>
                         </div>
-                        <div className="pet-modal-info">
-                            <h3>{selectedPetForView.dogName}</h3>
-                            <p><strong>Breed:</strong> {selectedPetForView.breed}</p>
-                            <p><strong>Category:</strong> {selectedPetForView.category}</p>
-                            <p><strong>Price:</strong> ₹{selectedPetForView.price?.toLocaleString()}</p>
-                            <p><strong>Age:</strong> {selectedPetForView.age}</p>
+                        <div className="p-6 flex flex-col gap-3">
+                            <h3 className="text-xl font-bold font-outfit text-white">{selectedPetForView.dogName}</h3>
+                            <div className="grid grid-cols-2 gap-4 text-sm mt-1">
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-slate-500 font-semibold uppercase">Breed</span>
+                                    <span className="text-slate-300 font-medium">{selectedPetForView.breed}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-slate-500 font-semibold uppercase">Category</span>
+                                    <span className="text-slate-300 font-medium">{selectedPetForView.category}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-slate-500 font-semibold uppercase">Adoption Fee</span>
+                                    <span className="text-primary font-bold">₹{selectedPetForView.price?.toLocaleString()}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="text-[10px] text-slate-500 font-semibold uppercase">Age</span>
+                                    <span className="text-slate-300 font-medium">{selectedPetForView.age}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Delete Confirm Modal */}
+            {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
-                <div className="modal-overlay">
-                    <div className="modal-content confirm-modal">
-                        <h3>Delete Review?</h3>
-                        <p>Are you sure you want to delete this review?</p>
-                        <div className="modal-actions">
-                            <button onClick={() => setShowDeleteConfirm(false)} className="cancel-btn">Cancel</button>
-                            <button onClick={handleDelete} className="confirm-delete-btn">Delete</button>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+                    <div className="glass-card max-w-sm w-full p-6 mx-4 flex flex-col gap-4 animate-scale-in border border-white/10">
+                        <h3 className="text-xl font-bold text-gradient-primary">Delete Review?</h3>
+                        <p className="text-slate-300 text-sm">Are you sure you want to delete this review? This action cannot be undone.</p>
+                        <div className="flex justify-end gap-3 mt-2">
+                            <button onClick={() => setShowDeleteConfirm(false)} className="btn btn-ghost btn-sm rounded-lg">Cancel</button>
+                            <button onClick={handleDelete} className="btn btn-error btn-sm rounded-lg text-white">Delete</button>
                         </div>
                     </div>
                 </div>

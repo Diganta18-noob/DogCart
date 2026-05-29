@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
 
-const SECRET_KEY = 'pawmart_secret_key_2024';
+const SECRET_KEY = process.env.JWT_SECRET || 'pawmart_secret_key_2024';
 
 // Generate JWT token with userId and userRole
 const generateToken = (userId, userRole) => {

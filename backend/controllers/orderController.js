@@ -3,15 +3,18 @@ const Order = require('../models/order');
 const OrderItem = require('../models/orderItem');
 const Dog = require('../models/dog');
 
-// Add order
+// Add order (with transaction for atomicity)
 const addOrder = async (req, res) => {
-    try {
-        console.log(req.body);
+    const session = await mongoose.startSession();
+    session.startTransaction();
 
+    try {
         const { orderItems, user, shippingAddress, billingAddress } = req.body;
 
         // Validate that order contains at least one item
         if (!orderItems || orderItems.length === 0) {
+            await session.abortTransaction();
+            session.endSession();
             return res.status(400).json({ message: 'Order must contain at least one item' });
         }
 
@@ -26,7 +29,7 @@ const addOrder = async (req, res) => {
         });
 
         // Save the empty order first
-        await newOrder.save();
+        await newOrder.save({ session });
 
         let totalAmount = 0;
         const orderItemIds = [];
@@ -34,19 +37,23 @@ const addOrder = async (req, res) => {
         // Process each order item
         for (const item of orderItems) {
             // Check if dog exists
-            const dog = await Dog.findById(item.dog);
+            const dog = await Dog.findById(item.dog).session(session);
             if (!dog) {
+                await session.abortTransaction();
+                session.endSession();
                 return res.status(404).json({ message: `Dog with ID ${item.dog} not found` });
             }
 
             // Check stock availability
             if (dog.stockQuantity < item.quantity) {
+                await session.abortTransaction();
+                session.endSession();
                 return res.status(400).json({ message: `Insufficient stock for ${dog.dogName}` });
             }
 
             // Deduct stock
             dog.stockQuantity -= item.quantity;
-            await dog.save();
+            await dog.save({ session });
 
             // Create order item
             const orderItem = new OrderItem({
@@ -56,7 +63,7 @@ const addOrder = async (req, res) => {
                 order: newOrder._id
             });
 
-            await orderItem.save();
+            await orderItem.save({ session });
             orderItemIds.push(orderItem._id);
             totalAmount += dog.price * item.quantity;
         }
@@ -64,10 +71,16 @@ const addOrder = async (req, res) => {
         // Update order with items and total
         newOrder.orderItems = orderItemIds;
         newOrder.totalAmount = totalAmount;
-        await newOrder.save();
+        await newOrder.save({ session });
+
+        // Commit the transaction
+        await session.commitTransaction();
+        session.endSession();
 
         res.status(201).json({ message: 'Order Added Successfully', order: newOrder });
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         res.status(500).json({ message: error.message });
     }
 };
@@ -83,7 +96,9 @@ const getAllOrders = async (req, res) => {
                     path: 'dog',
                     select: 'dogName category coverImage price'
                 }
-            });
+            })
+            .sort({ orderDate: -1 })
+            .lean();
 
         res.status(200).json(orders);
     } catch (error) {
@@ -102,7 +117,8 @@ const getOrderById = async (req, res) => {
                 populate: {
                     path: 'dog'
                 }
-            });
+            })
+            .lean();
 
         if (!order) {
             return res.status(404).json({ message: `Cannot find any order with ID ${id}` });
@@ -125,7 +141,9 @@ const getOrdersByUserId = async (req, res) => {
                 populate: {
                     path: 'dog'
                 }
-            });
+            })
+            .sort({ orderDate: -1 })
+            .lean();
 
         if (!orders || orders.length === 0) {
             return res.status(404).json({ message: `No orders found for user ID ${userId}` });

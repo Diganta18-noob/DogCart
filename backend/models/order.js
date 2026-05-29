@@ -33,6 +33,9 @@ const orderSchema = new mongoose.Schema({
     }]
 });
 
+// Index for faster user-order lookups
+orderSchema.index({ user: 1, orderDate: -1 });
+
 const Order = mongoose.model('Order', orderSchema);
 
 module.exports = Order;

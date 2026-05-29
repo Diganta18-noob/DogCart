@@ -28,6 +28,10 @@ const reviewSchema = new mongoose.Schema({
     }
 });
 
+// Indexes for faster review lookups
+reviewSchema.index({ user: 1 });
+reviewSchema.index({ dog: 1 });
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

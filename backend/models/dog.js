@@ -36,6 +36,10 @@ const dogSchema = new mongoose.Schema({
     }
 });
 
+// Indexes for faster queries
+dogSchema.index({ category: 1 });
+dogSchema.index({ dogName: 1 }, { unique: true });
+
 const Dog = mongoose.model('Dog', dogSchema);
 
 module.exports = Dog;
